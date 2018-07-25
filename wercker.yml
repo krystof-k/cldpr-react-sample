@@ -1,0 +1,138 @@
+box: node
+build:
+  steps:
+    - add-ssh-key:
+        name: Add icons repository GitHub deploy key
+        keyname: ICONS_GITHUB_DEPLOY_KEY
+    - add-to-known_hosts:
+        name: Add github.com to known_hosts
+        hostname: github.com
+    - script:
+        name: Install Yarn
+        code: |
+          npm install -g yarn
+    - script:
+        name: Set Yarn cache
+        code: |
+          yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+    - script:
+        name: Install Yarn dependencies
+        code: |
+          yarn install --force
+    - script:
+        name: Build production code
+        code: |
+          yarn build
+deploy-build:
+  steps:
+    - add-ssh-key:
+        name: Add GitHub deploy key
+        keyname: GITHUB_DEPLOY_KEY
+    - add-to-known_hosts:
+        name: Add github.com to known_hosts
+        hostname: github.com
+    - script:
+        name: Checkout branch
+        code: |
+          git fetch origin
+          git checkout $WERCKER_GIT_BRANCH
+    - script:
+        name: Config Git user
+        code: |
+          git config user.name "$GIT_USER_NAME"
+          git config user.email "$GIT_USER_EMAIL"
+    - script:
+        name: Push the build
+        code: |
+          # Stage all build files (even those in .gitignore)
+          git add lib --force
+          # Commit
+          git commit -a -m "Update branch with the recent build [skip ci]"
+          # Push
+          git push git@github.com:$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY.git $WERCKER_GIT_BRANCH
+build-styleguide:
+  steps:
+    - add-ssh-key:
+        name: Add icons repository GitHub deploy key
+        keyname: ICONS_GITHUB_DEPLOY_KEY
+    - add-to-known_hosts:
+        name: Add github.com to known_hosts
+        hostname: github.com
+    - script:
+        name: Install Yarn
+        code: |
+          npm install -g yarn
+    - script:
+        name: Set Yarn cache
+        code: |
+          yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+    - script:
+        name: Install Yarn dependencies
+        code: |
+          yarn install --force
+    - script:
+        name: Build styleguide
+        code: |
+          yarn styleguide:build
+deploy-styleguide:
+  steps:
+    - add-ssh-key:
+        name: Add GitHub deploy key
+        keyname: GITHUB_DEPLOY_KEY
+    - add-to-known_hosts:
+        name: Add github.com to known_hosts
+        hostname: github.com
+    - script:
+        name: Rename build folder
+        code: |
+          mkdir ./build_tmp
+          mv ./build/* ./build_tmp
+    - script:
+        name: Checkout GitHub Pages branch
+        code: |
+          git fetch origin
+          git checkout $GITHUB_PAGES_BRANCH
+    - script:
+        name: Config Git user
+        code: |
+          git config user.name "$GIT_USER_NAME"
+          git config user.email "$GIT_USER_EMAIL"
+    - script:
+        name: Commit styleguide build
+        code: |
+          # Clean existing build folder
+          rm -rf build
+          # Copy built styleguide to the current directory
+          cp -R build_tmp/* .
+          # Stage all files
+          git add .
+          # Commit
+          git commit -a -m "Update GitHub Pages with recent styleguide build"
+    - script:
+        name: Push to GitHub Pages branch
+        code: |
+          git push git@github.com:$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY.git $GITHUB_PAGES_BRANCH
+check-style:
+  steps:
+    - add-ssh-key:
+        name: Add icons repository GitHub deploy key
+        keyname: ICONS_GITHUB_DEPLOY_KEY
+    - add-to-known_hosts:
+        name: Add github.com to known_hosts
+        hostname: github.com
+    - script:
+        name: Install Yarn
+        code: |
+          npm install -g yarn
+    - script:
+        name: Set Yarn cache
+        code: |
+          yarn config set cache-folder $WERCKER_CACHE_DIR/yarn
+    - script:
+        name: Install Yarn dependencies
+        code: |
+          yarn install --force
+    - script:
+        name: Run ESlint
+        code: |
+          yarn lint

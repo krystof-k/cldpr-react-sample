@@ -1,0 +1,10 @@
+{
+  "editor.formatOnSave": true,
+  "files.insertFinalNewline": true,
+  "prettier.eslintIntegration": true,
+  "prettier.spaceParenthesis": false,
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact"
+  ]
+}

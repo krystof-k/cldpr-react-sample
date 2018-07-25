@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Icon large prop 1`] = `
+.c0 {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  vertical-align: middle;
+}
+
+.c0 > .c1 {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+<span
+  className="c0"
+>
+  <svg
+    className="c1 "
+    fill="currentcolor"
+    height="48px"
+    width="48px"
+  >
+    <path />
+  </svg>
+</span>
+`;
+
+exports[`Icon renders 1`] = `
+.c0 {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  vertical-align: middle;
+}
+
+.c0 > .c1 {
+  width: 48px;
+  height: 48px;
+  display: block;
+}
+
+<span
+  className="c0"
+>
+  <svg
+    className="c1 "
+    fill="currentcolor"
+    height="24px"
+    width="24px"
+  >
+    <path />
+  </svg>
+</span>
+`;
